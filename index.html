@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>설문지</title>
+</head>
+<body>
+    <form id="mainForm">
+        <!-- 폼 안에 내용을 그룹 지을 때 사용. 구역을 나눈 것. 필수아님-->
+        <fieldset>
+            <!-- 제목을 의미. 필수는 아님. 구역에 대한 설명. fieldset 안에서 반드시 첫 번째에 있어야 함. -->
+            <legend>설문지</legend>
+            <progress value="0" max="100" class="bar-progress"></progress>
+            <p class="msg-notice">설문지 작성하기</p>
+            <label for="q1">질문1. 무엇을 가장 배우고 싶나요?</label>
+            <input type="text" id="q1" required> <!--required는 반드시 input을 작성하게 함.-->
+            <label for="q2">질문2. 시간은?</label>
+            <input type="text" id="q2" required>
+            <label for="q3">질문3. 몇 시간</label>
+            <input type="text" id="q3" required>
+            <label for="q4">질문4. 난이도</label>
+            <input type="text" id="q4" required>
+            <label for="q5">질문5. 하고 싶은 말</label>
+            <input type="text" id="q5" required>
+
+            <button type="submit">제출하기</button>
+            <button type="reset">초기화</button>
+        </fieldset>
+        <!-- fieldset은 새로운 block formatting context를 생성한다. -->
+    </form>
+
+    <script>
+        const mainForm = document.querySelector('#mainForm');
+        const progressBar = mainForm.querySelector('.bar-progress');
+        const message = mainForm.querySelector('.msg-notice');
+        const inputs = mainForm.querySelectorAll('input')
+        const btnReset = mainForm.querySelector('button[type="reset"]');
+        
+        // 유효한 인풋의 갯수를 저장
+        mainForm.addEventListener('keyup', () => {
+            // 1번째 방법
+            // let validCount = 0;
+            // inputs.forEach((item) => {
+            //     // input의 값이 유효한지 아닌지 알려주는 속성 -> validity
+            //     // console.log(item.validity);
+            //     if(item.validity.valid) {
+            //         validCount++;
+            //     }
+            // });
+
+            // 2번째 방법
+            // inputs은 노드리스트여서 array 매서드 filter를 사용할 수 없다.
+            // 사용하려면 빌려와야 한다. 아래와 같이 작성하고 call은 this를 가져온다.
+            // filter가 참조하는 메서드를 바꿀 수 있다.
+            // const result = Array.prototype.filter.call(inputs, (item) => {
+            //     return item.validity.valid
+            // })
+
+            //3번째 방법
+            const result = [...inputs].filter((item) => {
+                return item.validity.valid
+            })
+
+            // switch(validCount)
+            switch(result.length) {
+                case 1:
+                    message.textContent = '첫 번째 클리어';
+                    progressBar.setAttribute('value', 20);
+                    break
+                case 2:
+                    message.textContent = '두 번째 클리어';
+                    progressBar.setAttribute('value', 40);
+                    break
+                case 3:
+                    message.textContent = '세 번째 클리어';
+                    progressBar.setAttribute('value', 60);
+                    break
+                case 4:
+                    message.textContent = '네 번째 클리어';
+                    progressBar.setAttribute('value', 80);
+                    break
+                case 5:
+                    message.textContent = '올 클리어';
+                    progressBar.setAttribute('value', 100);
+                    break
+                // 처음 상태로 되돌리기
+                default:
+                    message.textContent = '설문지 작성하기';
+                    progressBar.setAttribute('value', 0);
+            }
+        })
+        btnReset.addEventListener('click', () => {
+            message.textContent = '설문지 작성하기';
+            progressBar.setAttribute('value', 0);
+        });
+    </script>
+</body>
+</html>
